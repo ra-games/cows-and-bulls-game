@@ -249,12 +249,16 @@
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
             }
-        
-            document.getElementById("history").innerHTML = "";  // Clear previous guesses
-        
-            document.getElementById("gameControls").style.display = "none"; // Hide game controls again
+                
+            // Clear previous guesses
+            document.getElementById("history").innerHTML = ""; 
 
-            document.getElementById("message").innerText = ""; // Clear the congratulatory message
+            // Hide game controls again
+            document.getElementById("gameControls").style.display = "none"; 
+
+            // Clear the congratulatory message
+            document.getElementById("message").innerText = "";
+                
             // Remove any existing alerts/messages
             clearTimeout(alertTimeout); // If the win message is queued, clear it
         }
