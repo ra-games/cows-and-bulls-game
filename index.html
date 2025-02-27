@@ -110,10 +110,12 @@
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
-                secretWord = (await response.text()).trim().toLowerCase();
+                const words = (await response.text()).trim().split("\n").map(word => word.toLowerCase());
+                validWords = words.filter(word => word.length === 4);
+                secretWord = validWords[Math.floor(Math.random() * validWords.length)];
                 console.log("Secret Word:", secretWord);
             } catch (error) {
-                console.error("Error loading secret word:", error);
+                console.error("Error loading secret words:", error);
             }
         }
 
