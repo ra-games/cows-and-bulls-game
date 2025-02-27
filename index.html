@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cows and Bulls Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Cows and Bulls Game</h1>
+        <p>Guess the 4-letter word!</p>
+        
+        <input type="text" id="userGuess" maxlength="4" placeholder="Enter a word">
+        <button onclick="checkGuess()">Submit</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let validWords = []; 
+        let secretWord = "";
+
+        async function loadWords() {
+            try {
+                const response = await fetch("words.txt");
+                const text = await response.text();
+                validWords = text.split("\n").map(word => word.trim().toLowerCase()).filter(word => word.length === 4);
+                secretWord = validWords[Math.floor(Math.random() * validWords.length)];
+            } catch (error) {
+                console.error("Error loading words:", error);
+            }
+        }
+
+        function checkGuess() {
+            let userGuess = document.getElementById("userGuess").value.toLowerCase();
+            if (!validWords.includes(userGuess)) {
+                document.getElementById("result").innerText = "Invalid word! Choose from the list.";
+                return;
+            }
+
+            let cows = 0, bulls = 0;
+            for (let i = 0; i < 4; i++) {
+                if (userGuess[i] === secretWord[i]) {
+                    bulls++;
+                } else if (secretWord.includes(userGuess[i])) {
+                    cows++;
+                }
+            }
+
+            if (bulls === 4) {
+                document.getElementById("result").innerText = `🎉 Correct! The word was "${secretWord}"`;
+            } else {
+                document.getElementById("result").innerText = `Cows: ${cows}, Bulls: ${bulls}`;
+            }
+        }
+
+        loadWords();
+    </script>
+
+</body>
+</html>
