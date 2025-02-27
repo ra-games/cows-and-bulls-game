@@ -1,0 +1,8 @@
+game
+word
+play
+code
+life
+hint
+work
+love
