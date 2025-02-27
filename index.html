@@ -96,6 +96,12 @@
         }
         .used-correct { background-color: light-gray; color: white; }
         .used-wrong { background-color: gray; color: white; }
+        #congratulations {
+            margin-top: 10px;
+            font-size: 18px;
+            color: green;
+            font-weight: bold;
+            display: none;
     </style>
 </head>
 <body>
@@ -115,6 +121,7 @@
             <button onclick="checkGuess()">Submit</button>
         </div>
         <div id="history"></div>
+        <div id="congratulations">Congratulations! You guessed the word correctly! 🎉</div>
         <div class="keyboard-container" id="keyboard"></div>
         <div class="button-container" id="gameControls" style="display: none;">
             <button class="restart-btn" onclick="restartGame()">Restart</button>
@@ -203,8 +210,10 @@
             newGuess.className = "guess-item";
             newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
-
-            document.getElementById("gameControls").style.display = "block";
+            if (bulls === 4) {
+                document.getElementById("congratulations").style.display = "block";
+                document.getElementById("gameControls").style.display = "block";
+            }
 
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
