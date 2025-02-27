@@ -121,7 +121,7 @@
             <button onclick="checkGuess()">Submit</button>
         </div>
         <div id="history"></div>
-        <div id="congratulations">Congratulations! You guessed the word correctly! 🎉</div>
+        <div id="message" style="margin-top: 10px; font-size: 18px; font-weight: bold; color: green;"></div>
         <div class="keyboard-container" id="keyboard"></div>
         <div class="button-container" id="gameControls" style="display: none;">
             <button class="restart-btn" onclick="restartGame()">Restart</button>
@@ -232,7 +232,7 @@
             newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
             if (bulls === 4) {
-                document.getElementById("congratulations").style.display = "block";
+                 document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
             }
                 document.getElementById("gameControls").style.display = "block";
 
@@ -250,12 +250,11 @@
                 document.getElementById(`letter${i}`).value = "";
             }
         
-            // Clear previous guesses
-            document.getElementById("history").innerHTML = "";
+            document.getElementById("history").innerHTML = "";  // Clear previous guesses
         
-            // Hide game controls again
-            document.getElementById("gameControls").style.display = "none";
-        
+            document.getElementById("gameControls").style.display = "none"; // Hide game controls again
+
+            document.getElementById("message").innerText = ""; // Clear the congratulatory message
             // Remove any existing alerts/messages
             clearTimeout(alertTimeout); // If the win message is queued, clear it
         }
