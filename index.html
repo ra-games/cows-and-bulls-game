@@ -21,17 +21,22 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px;
+            width: 320px;
         }
         h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 10px;
         }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
         input {
-            padding: 10px;
-            font-size: 16px;
-            width: 80%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
             text-align: center;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -51,74 +56,90 @@
         button:hover {
             background-color: #218838;
         }
-        #result {
+        #history {
             margin-top: 15px;
+            text-align: left;
+            width: 100%;
+        }
+        .guess-item {
             font-size: 18px;
-            font-weight: bold;
-            color: #333;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-
     <div class="game-container">
         <h1>Cows and Bulls Game</h1>
         <p>Guess the 4-letter word!</p>
         
-        <input type="text" id="userGuess" maxlength="4" placeholder="Enter a word">
+        <div class="input-group">
+            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1)">
+            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2)">
+            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3)">
+            <input type="text" maxlength="1" id="letter4">
+        </div>
         <button onclick="checkGuess()">Submit</button>
-        
         <div id="result"></div>
+        <div id="history"></div>
     </div>
 
     <script>
-        let validWords = []; 
+        let validWords = [];
         let secretWord = "";
 
-      async function loadWords() {
-    try {
-        const response = await fetch("words.txt");
-        const text = await response.text();
-        validWords = text.split(/\s*,\s*/).map(word => word.trim().toLowerCase()).filter(word => word.length === 4);
+        async function loadWords() {
+            try {
+                const response = await fetch("words.txt");
+                const text = await response.text();
+                validWords = text.split(",").map(word => word.trim().toLowerCase()).filter(word => word.length === 4);
+                
+                if (validWords.length > 0) {
+                    secretWord = validWords[Math.floor(Math.random() * validWords.length)];
+                    console.log("Secret Word:", secretWord);
+                }
+            } catch (error) {
+                console.error("Error loading words:", error);
+            }
+        }
 
-        console.log("Valid words loaded:", validWords);  // Debugging step
+        function moveFocus(index) {
+            if (index < 4) {
+                document.getElementById(`letter${index + 1}`).focus();
+            }
+        }
         
-        if (validWords.length > 0) {
-            secretWord = validWords[Math.floor(Math.random() * validWords.length)];
-            console.log("Secret Word:", secretWord);  // Debugging step
-        }
-    } catch (error) {
-        console.error("Error loading words:", error);
-    }
-}
         function checkGuess() {
-    let userGuess = document.getElementById("userGuess").value.toLowerCase().trim();
-    
-    console.log("User guess:", userGuess);  // Debugging step
-    
-    if (!validWords.includes(userGuess)) {
-        document.getElementById("result").innerText = "Invalid word! Choose from the list.";
-        return;
-    }
-
-    let cows = 0, bulls = 0;
-    for (let i = 0; i < 4; i++) {
-        if (userGuess[i] === secretWord[i]) {
-            bulls++;
-        } else if (secretWord.includes(userGuess[i])) {
-            cows++;
+            let guess = "";
+            for (let i = 1; i <= 4; i++) {
+                guess += document.getElementById(`letter${i}`).value.toLowerCase();
+            }
+            
+            if (!validWords.includes(guess)) {
+                document.getElementById("result").innerText = "Invalid word! Choose from the list.";
+                return;
+            }
+            
+            let cows = 0, bulls = 0;
+            for (let i = 0; i < 4; i++) {
+                if (guess[i] === secretWord[i]) {
+                    bulls++;
+                } else if (secretWord.includes(guess[i])) {
+                    cows++;
+                }
+            }
+            
+            let resultText = `Cows: ${cows}, Bulls: ${bulls}`;
+            document.getElementById("result").innerText = bulls === 4 ? `🎉 Correct! The word was "${secretWord}"` : resultText;
+            
+            let historyDiv = document.getElementById("history");
+            let newGuess = document.createElement("div");
+            newGuess.className = "guess-item";
+            newGuess.innerText = `${guess.toUpperCase()} → ${resultText}`;
+            historyDiv.prepend(newGuess);
         }
-    }
-
-    if (bulls === 4) {
-        document.getElementById("result").innerText = `🎉 Correct! The word was "${secretWord}"`;
-    } else {
-        document.getElementById("result").innerText = `Cows: ${cows}, Bulls: ${bulls}`;
-    }
-}
 
         loadWords();
     </script>
-
 </body>
 </html>
