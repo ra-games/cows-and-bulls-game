@@ -98,7 +98,6 @@
             <button class="restart-btn" onclick="restartGame()" id="restartBtn" style="display:none;">Restart</button>
             <button onclick="checkGuess()">Submit</button>
         </div>
-        <div id="result"></div>
         <div id="history"></div>
     </div>
 
@@ -154,13 +153,10 @@
                 }
             }
             
-            let resultText = `Cows: ${cows}, Bulls: ${bulls}`;
-            document.getElementById("result").innerText = bulls === 4 ? `🎉 Correct! The word was "${secretWord}"` : resultText;
-            
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = `${guess.toUpperCase()} → ${resultText}`;
+            newGuess.innerText = `${guess.toUpperCase()} → Cows: ${cows}, Bulls: ${bulls}`;
             historyDiv.prepend(newGuess);
             
             document.getElementById("restartBtn").style.display = "block";
@@ -174,7 +170,6 @@
         function restartGame() {
             secretWord = validWords[Math.floor(Math.random() * validWords.length)];
             console.log("New Secret Word:", secretWord);
-            document.getElementById("result").innerText = "";
             document.getElementById("history").innerHTML = "";
             document.getElementById("restartBtn").style.display = "none";
             for (let i = 1; i <= 4; i++) {
