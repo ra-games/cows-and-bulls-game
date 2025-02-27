@@ -159,18 +159,27 @@
             }
         }
 */
-        let wordList = []; 
+        let wordList = []; // To store the valid words from words.txt
         async function loadWords() {
-            try {
-                const response = await fetch("secretword.txt");
-                const words = (await response.text()).trim().split(",").map(w => w.trim().toLowerCase());
-                secretWord = words[Math.floor(Math.random() * words.length)];
-                wordList = words;
-                console.log("Secret Word:", secretWord);
-            } catch (error) {
-                console.error("Error loading secret word:", error);
-            }
+        try {
+            // Fetch secret words for the current game from secretword.txt
+            const secretWordResponse = await fetch("secretword.txt");
+            const secretWords = (await secretWordResponse.text()).trim().split("\n").map(w => w.trim().toLowerCase());
+
+            // Randomly select a secret word from the list
+            secretWord = secretWords[Math.floor(Math.random() * secretWords.length)];
+            console.log("Secret Word:", secretWord);
+            
+            // Fetch valid words from words.txt
+            const wordsResponse = await fetch("words.txt");
+            const words = (await wordsResponse.text()).trim().split(",").map(w => w.trim().toLowerCase());
+
+            // Store the list of valid words
+            wordList = words;
+        } catch (error) {
+            console.error("Error loading words:", error);
         }
+    }
 
         function moveFocus(index, event) {
             if (event.inputType === "deleteContentBackward") return;
@@ -237,6 +246,7 @@
             newGuess.className = "guess-item";
             newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
+            
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
             }
