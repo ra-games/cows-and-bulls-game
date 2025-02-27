@@ -164,7 +164,7 @@
         try {
             // Fetch secret words for the current game from secretword.txt
             const secretWordResponse = await fetch("secretword.txt");
-            const secretWords = (await secretWordResponse.text()).trim().split("\n").map(w => w.trim().toLowerCase());
+            const secretWords = (await secretWordResponse.text()).trim().split(",").map(w => w.trim().toLowerCase());
 
             // Randomly select a secret word from the list
             secretWord = secretWords[Math.floor(Math.random() * secretWords.length)];
