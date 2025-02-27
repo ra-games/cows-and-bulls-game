@@ -159,13 +159,13 @@
             }
         }
 */
-        
+        let wordList = []; 
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
                 const words = (await response.text()).trim().split(",").map(w => w.trim().toLowerCase());
                 secretWord = words[Math.floor(Math.random() * words.length)];
-
+                wordList = words;
                 console.log("Secret Word:", secretWord);
             } catch (error) {
                 console.error("Error loading secret word:", error);
@@ -196,6 +196,12 @@
                 guess += document.getElementById(`letter${i}`).value.toLowerCase();
             }
 
+             // Check if the guess is a valid word
+            if (!wordList.includes(guess)) {
+                alert("Invalid word! Please guess a valid 4-letter word.");
+                return;
+            }
+            
             let bulls = 0;
             let cows = 0;
             
