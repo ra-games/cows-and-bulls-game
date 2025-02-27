@@ -84,8 +84,8 @@
     <div class="game-container">
         <h1>Cows and Bulls Game</h1>
         <p>Guess the 4-letter word!</p>
-        <p><strong>Bulls:</strong> Letter at the right position</p>
-        <p><strong>Cows:</strong> Letter at the wrong position</p>
+        <p><strong>Bulls:</strong> Correct letter in the correct position</p>
+        <p><strong>Cows:</strong> Correct letter in the wrong position</p>
         
         <div class="input-group">
             <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1, event)" onkeydown="handleBackspace(1, event)">
@@ -109,7 +109,12 @@
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
-                const words = (await response.text()).trim().split("\n").map(w => w.trim().toLowerCase());
+                const words = (await response.text()).trim().split("\n").map(w => w.trim().toLowerCase().filter(w => /^[a-zA-Z]{4}$/.test(w)); // Ensures only 4-letter words with alphabets
+        
+        if (words.length === 0) {
+            console.error("No valid 4-letter words found in the file.");
+            return;
+        });
                 secretWord = words[Math.floor(Math.random() * words.length)];
                 console.log("Secret Word:", secretWord);
             } catch (error) {
