@@ -66,10 +66,12 @@
             padding: 5px;
             border-bottom: 1px solid #ddd;
         }
-        #explanation {
+        .restart-btn {
             margin-top: 10px;
-            font-size: 14px;
-            color: #555;
+            background-color: #dc3545;
+        }
+        .restart-btn:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -79,15 +81,15 @@
         <p>Guess the 4-letter word!</p>
         
         <div class="input-group">
-            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1)">
-            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2)">
-            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3)">
-            <input type="text" maxlength="1" id="letter4">
+            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1, event)" onkeydown="handleBackspace(1, event)">
+            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2, event)" onkeydown="handleBackspace(2, event)">
+            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3, event)" onkeydown="handleBackspace(3, event)">
+            <input type="text" maxlength="1" id="letter4" onkeydown="handleBackspace(4, event)">
         </div>
         <button onclick="checkGuess()">Submit</button>
+        <button class="restart-btn" onclick="restartGame()">Restart Game</button>
         <div id="result"></div>
         <div id="history"></div>
-        <p id="explanation">Bulls: Letter at the right position<br>Cows: Letter at the wrong position</p>
     </div>
 
     <script>
@@ -109,9 +111,16 @@
             }
         }
 
-        function moveFocus(index) {
-            if (index < 4) {
+        function moveFocus(index, event) {
+            if (event.inputType === "deleteContentBackward") return;
+            if (index < 4 && event.target.value) {
                 document.getElementById(`letter${index + 1}`).focus();
+            }
+        }
+        
+        function handleBackspace(index, event) {
+            if (event.key === "Backspace" && !event.target.value && index > 1) {
+                document.getElementById(`letter${index - 1}`).focus();
             }
         }
         
@@ -144,6 +153,17 @@
             newGuess.innerText = `${guess.toUpperCase()} → ${resultText}`;
             historyDiv.prepend(newGuess);
             
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`letter${i}`).value = "";
+            }
+            document.getElementById("letter1").focus();
+        }
+
+        function restartGame() {
+            secretWord = validWords[Math.floor(Math.random() * validWords.length)];
+            console.log("New Secret Word:", secretWord);
+            document.getElementById("result").innerText = "";
+            document.getElementById("history").innerHTML = "";
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
             }
