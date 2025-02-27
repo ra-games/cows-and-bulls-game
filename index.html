@@ -196,14 +196,35 @@
                 guess += document.getElementById(`letter${i}`).value.toLowerCase();
             }
 
-            let cows = 0, bulls = 0;
+            let bulls = 0;
+            let cows = 0;
+            
+            let secretArray = secretWord.split("");
+            let guessArray = guess.split("");
+            
+            let countedIndexes = new Set(); // Track indexes that are already counted as bulls
+        
+            // Step 1: Count bulls
             for (let i = 0; i < 4; i++) {
-                if (guess[i] === secretWord[i]) {
+                if (guessArray[i] === secretArray[i]) {
                     bulls++;
-                } else if (secretWord.includes(guess[i])) {
-                    cows++;
+                    countedIndexes.add(i); // Mark this index so it's not counted as a cow
+                    secretArray[i] = null; // Remove this letter from further consideration
                 }
             }
+        
+            // Step 2: Count cows
+            for (let i = 0; i < 4; i++) {
+                if (guessArray[i] !== secretWord[i] && secretArray.includes(guessArray[i])) {
+                    let index = secretArray.indexOf(guessArray[i]);
+                    if (!countedIndexes.has(index)) { // Ensure it hasn’t already been counted
+                        cows++;
+                        countedIndexes.add(index); // Mark this index as used
+                        secretArray[index] = null; // Remove the letter to avoid duplicate cows
+                    }
+                }
+            }
+
 
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
