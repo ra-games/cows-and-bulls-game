@@ -69,9 +69,15 @@
         .restart-btn {
             margin-top: 10px;
             background-color: #dc3545;
+            margin-right: 10px;
         }
         .restart-btn:hover {
             background-color: #c82333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -79,6 +85,8 @@
     <div class="game-container">
         <h1>Cows and Bulls Game</h1>
         <p>Guess the 4-letter word!</p>
+        <p><strong>Bulls:</strong> Letter at the right position</p>
+        <p><strong>Cows:</strong> Letter at the wrong position</p>
         
         <div class="input-group">
             <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1, event)" onkeydown="handleBackspace(1, event)">
@@ -86,8 +94,10 @@
             <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3, event)" onkeydown="handleBackspace(3, event)">
             <input type="text" maxlength="1" id="letter4" onkeydown="handleBackspace(4, event)">
         </div>
-        <button onclick="checkGuess()">Submit</button>
-        <button class="restart-btn" onclick="restartGame()">Restart Game</button>
+        <div class="button-container">
+            <button class="restart-btn" onclick="restartGame()" id="restartBtn" style="display:none;">Restart</button>
+            <button onclick="checkGuess()">Submit</button>
+        </div>
         <div id="result"></div>
         <div id="history"></div>
     </div>
@@ -153,6 +163,8 @@
             newGuess.innerText = `${guess.toUpperCase()} → ${resultText}`;
             historyDiv.prepend(newGuess);
             
+            document.getElementById("restartBtn").style.display = "block";
+            
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
             }
@@ -164,6 +176,7 @@
             console.log("New Secret Word:", secretWord);
             document.getElementById("result").innerText = "";
             document.getElementById("history").innerHTML = "";
+            document.getElementById("restartBtn").style.display = "none";
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
             }
