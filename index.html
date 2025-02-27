@@ -242,14 +242,22 @@
             document.getElementById("letter1").focus();
         }
 
-        function restartGame() {
-            document.getElementById("history").innerHTML = "";
-            document.getElementById("gameControls").style.display = "none";
+            function restartGame() {
+            fetchWordList(); // Reload the word list and select a new secret word
+        
+            // Clear input fields
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
             }
-            document.getElementById("letter1").focus();
-            loadWords();
+        
+            // Clear previous guesses
+            document.getElementById("history").innerHTML = "";
+        
+            // Hide game controls again
+            document.getElementById("gameControls").style.display = "none";
+        
+            // Remove any existing alerts/messages
+            clearTimeout(alertTimeout); // If the win message is queued, clear it
         }
 
         function revealWord() {
