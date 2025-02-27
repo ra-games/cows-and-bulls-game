@@ -79,6 +79,12 @@
             justify-content: center;
             gap: 10px;
         }
+        #congrats {
+            font-size: 20px;
+            color: #d9534f;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +104,8 @@
             <button class="restart-btn" onclick="restartGame()" id="restartBtn" style="display:none;">Restart</button>
             <button onclick="checkGuess()">Submit</button>
         </div>
+        <div id="result"></div>
+        <div id="congrats"></div>
         <div id="history"></div>
     </div>
 
@@ -153,10 +161,17 @@
                 }
             }
             
+            let resultText = `Bulls: ${bulls}, Cows: ${cows}`;
+            document.getElementById("result").innerText = resultText;
+            
+            if (bulls === 4) {
+                document.getElementById("congrats").innerText = `🎉 Congratulations! You guessed the word "${secretWord}" correctly! 🎉`;
+            }
+            
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = `${guess.toUpperCase()} → Cows: ${cows}, Bulls: ${bulls}`;
+            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
             
             document.getElementById("restartBtn").style.display = "block";
@@ -168,13 +183,11 @@
         }
 
         function restartGame() {
+            document.getElementById("congrats").innerText = "";
             secretWord = validWords[Math.floor(Math.random() * validWords.length)];
-            console.log("New Secret Word:", secretWord);
+            document.getElementById("result").innerText = "";
             document.getElementById("history").innerHTML = "";
             document.getElementById("restartBtn").style.display = "none";
-            for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).value = "";
-            }
             document.getElementById("letter1").focus();
         }
 
