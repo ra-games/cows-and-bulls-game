@@ -21,23 +21,26 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px;
+            width: 320px;
         }
         h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 10px;
         }
-        .input-boxes {
+        .input-group {
             display: flex;
             justify-content: center;
+            gap: 5px;
         }
-        .input-boxes input {
+        input {
             width: 40px;
             height: 40px;
+            font-size: 24px;
             text-align: center;
-            font-size: 20px;
-            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
         }
         button {
             margin-top: 10px;
@@ -55,108 +58,129 @@
         }
         #history {
             margin-top: 15px;
-            font-size: 16px;
             text-align: left;
+            width: 100%;
         }
-        .hidden {
-            display: none;
+        .guess-item {
+            font-size: 18px;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .restart-btn, .reveal-btn {
+            margin-top: 10px;
+            background-color: #dc3545;
+        }
+        .restart-btn:hover, .reveal-btn:hover {
+            background-color: #c82333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
-
     <div class="game-container">
         <h1>Cows and Bulls Game</h1>
         <p>Guess the 4-letter word!</p>
-        
-        <div class="input-boxes">
-            <input type="text" maxlength="1" id="box1" oninput="moveNext(0)">
-            <input type="text" maxlength="1" id="box2" oninput="moveNext(1)">
-            <input type="text" maxlength="1" id="box3" oninput="moveNext(2)">
-            <input type="text" maxlength="1" id="box4" oninput="moveNext(3)">
+        <p><strong>Bulls:</strong> Letter at the right position</p>
+        <p><strong>Cows:</strong> Letter at the wrong position</p>
+
+        <div class="input-group">
+            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1, event)" onkeydown="handleBackspace(1, event)">
+            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2, event)" onkeydown="handleBackspace(2, event)">
+            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3, event)" onkeydown="handleBackspace(3, event)">
+            <input type="text" maxlength="1" id="letter4" onkeydown="handleBackspace(4, event)">
         </div>
-        <button onclick="checkGuess()">Submit</button>
-        <button id="restart" class="hidden" onclick="restartGame()">Restart</button>
-        <button id="reveal" class="hidden" onclick="revealWord()">Reveal Word</button>
+        <div class="button-container">
+            <button onclick="checkGuess()">Submit</button>
+        </div>
         <div id="history"></div>
-        <div id="result"></div>
+        <div class="button-container" id="gameControls" style="display: none;">
+            <button class="restart-btn" onclick="restartGame()">Restart</button>
+            <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
+        </div>
     </div>
 
     <script>
-        let validWords = [];
+
         let secretWord = "";
 
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
-                const text = await response.text();
-                validWords = text.split(",").map(word => word.trim().toLowerCase()).filter(word => word.length === 4);
-                if (validWords.length > 0) {
-                    secretWord = validWords[Math.floor(Math.random() * validWords.length)];
-                    console.log("Secret Word:", secretWord); 
-                }
+                const words = (await response.text()).trim().split("\n").map(w => w.trim().toLowerCase());
+                secretWord = words[Math.floor(Math.random() * words.length)];
+
+                console.log("Secret Word:", secretWord);
             } catch (error) {
-                console.error("Error loading words:", error);
+                console.error("Error loading secret word:", error);
             }
         }
 
-        function moveNext(index) {
-            let boxes = document.querySelectorAll(".input-boxes input");
-            if (boxes[index].value && index < 3) {
-                boxes[index + 1].focus();
+        function moveFocus(index, event) {
+            if (event.inputType === "deleteContentBackward") return;
+            if (index < 4 && event.target.value) {
+                document.getElementById(`letter${index + 1}`).focus();
+            }
+        }
+
+        function handleBackspace(index, event) {
+            if (event.key === "Backspace" && !event.target.value && index > 1) {
+                document.getElementById(`letter${index - 1}`).focus();
             }
         }
 
         function checkGuess() {
-            let boxes = document.querySelectorAll(".input-boxes input");
-            let userGuess = Array.from(boxes).map(input => input.value.toLowerCase()).join('');
-
-            if (userGuess.length !== 4 || !validWords.includes(userGuess)) {
-                document.getElementById("result").innerText = "Invalid word! Choose from the list.";
+            if (!secretWord) {
+                console.error("Secret word not loaded yet.");
                 return;
+            }
+            
+            let guess = "";
+            for (let i = 1; i <= 4; i++) {
+                guess += document.getElementById(`letter${i}`).value.toLowerCase();
             }
 
             let cows = 0, bulls = 0;
             for (let i = 0; i < 4; i++) {
-                if (userGuess[i] === secretWord[i]) {
+                if (guess[i] === secretWord[i]) {
                     bulls++;
-                } else if (secretWord.includes(userGuess[i])) {
+                } else if (secretWord.includes(guess[i])) {
                     cows++;
                 }
             }
 
             let historyDiv = document.getElementById("history");
-            historyDiv.innerHTML += `<p>${userGuess} - Bulls: ${bulls}, Cows: ${cows}</p>`;
+            let newGuess = document.createElement("div");
+            newGuess.className = "guess-item";
+            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
+            historyDiv.prepend(newGuess);
 
-            if (bulls === 4) {
-                document.getElementById("result").innerText = `🎉 Congratulations! You guessed the word: "${secretWord}"`;
-                document.getElementById("restart").classList.remove("hidden");
+            document.getElementById("gameControls").style.display = "block";
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`letter${i}`).value = "";
             }
-            
-            boxes.forEach(box => box.value = "");
-            boxes[0].focus();
+            document.getElementById("letter1").focus();
         }
 
         function restartGame() {
             document.getElementById("history").innerHTML = "";
-            document.getElementById("result").innerText = "";
-            document.getElementById("restart").classList.add("hidden");
-            document.getElementById("reveal").classList.add("hidden");
+            document.getElementById("gameControls").style.display = "none";
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`letter${i}`).value = "";
+            }
+            document.getElementById("letter1").focus();
             loadWords();
         }
 
         function revealWord() {
-            document.getElementById("result").innerText = `The secret word was: "${secretWord}"`;
+            alert("The secret word was: " + secretWord.toUpperCase());
         }
-
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "Enter") {
-                checkGuess();
-            }
-        });
 
         loadWords();
     </script>
-
 </body>
 </html>
