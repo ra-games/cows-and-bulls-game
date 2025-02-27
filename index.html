@@ -78,6 +78,24 @@
             justify-content: center;
             gap: 10px;
         }
+         .keyboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 150px;
+            gap: 5px;
+        }
+        .key {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        .used-correct { background-color: light-gray; color: white; }
+        .used-wrong { background-color: gray; color: white; }
     </style>
 </head>
 <body>
@@ -97,6 +115,7 @@
             <button onclick="checkGuess()">Submit</button>
         </div>
         <div id="history"></div>
+        <div class="keyboard-container" id="keyboard"></div>
         <div class="button-container" id="gameControls" style="display: none;">
             <button class="restart-btn" onclick="restartGame()">Restart</button>
             <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
@@ -107,6 +126,33 @@
 
         let secretWord = "";
 
+
+
+        let usedLetters = {};
+        const keyboardContainer = document.getElementById("keyboard");
+        const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+
+        function generateKeyboard() {
+            keyboardContainer.innerHTML = "";
+            letters.forEach(letter => {
+                const key = document.createElement("div");
+                key.className = "key";
+                key.innerText = letter.toUpperCase();
+                key.dataset.letter = letter;
+                updateKeyColor(key, letter);
+                keyboardContainer.appendChild(key);
+            });
+        }
+        
+        function updateKeyColor(key, letter) {
+            if (usedLetters[letter] === "correct") {
+                key.classList.add("used-correct");
+            } else if (usedLetters[letter] === "wrong") {
+                key.classList.add("used-wrong");
+            }
+        }
+
+        
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
