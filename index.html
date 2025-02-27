@@ -104,18 +104,16 @@
     </div>
 
     <script>
-        let validWords = [];
         let secretWord = "";
 
         async function loadWords() {
             try {
                 const response = await fetch("secretword.txt");
-                const words = (await response.text()).trim().split("\n").map(word => word.toLowerCase());
-                validWords = words.filter(word => word.length === 4);
-                secretWord = validWords[Math.floor(Math.random() * validWords.length)];
+                const words = (await response.text()).trim().split("\n").map(w => w.trim().toLowerCase());
+                secretWord = words[Math.floor(Math.random() * words.length)];
                 console.log("Secret Word:", secretWord);
             } catch (error) {
-                console.error("Error loading secret words:", error);
+                console.error("Error loading secret word:", error);
             }
         }
 
@@ -133,6 +131,11 @@
         }
         
         function checkGuess() {
+            if (!secretWord) {
+                console.error("Secret word not loaded yet.");
+                return;
+            }
+            
             let guess = "";
             for (let i = 1; i <= 4; i++) {
                 guess += document.getElementById(`letter${i}`).value.toLowerCase();
