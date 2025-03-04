@@ -200,9 +200,15 @@
                 return;
             }
 
+
             let guess = "";
             for (let i = 1; i <= 4; i++) {
                 guess += document.getElementById(letter${i}).value.toLowerCase();
+
+
+
+
+
             }
 
              // Check if the guess is a valid word
@@ -249,22 +255,30 @@
 
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
+
+
+
             }
                 document.getElementById("gameControls").style.display = "block";
 
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(letter${i}).value = "";
+
+
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
+
             loadWords(); // Reload the word list and select a new secret word
 
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(letter${i}).value = "";
+
             }
+
 
             // Clear previous guesses
             document.getElementById("history").innerHTML = ""; 
