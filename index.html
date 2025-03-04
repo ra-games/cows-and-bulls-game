@@ -184,13 +184,13 @@
         function moveFocus(index, event) {
             if (event.inputType === "deleteContentBackward") return;
             if (index < 4 && event.target.value) {
-                document.getElementById(letter${index + 1}).focus();
+                document.getElementById(`letter${index + 1}`).focus();
             }
         }
 
         function handleBackspace(index, event) {
             if (event.key === "Backspace" && !event.target.value && index > 1) {
-                document.getElementById(letter${index - 1}).focus();
+                document.getElementById(`letter${index - 1}`).focus();
             }
         }
 
@@ -200,15 +200,9 @@
                 return;
             }
 
-
             let guess = "";
             for (let i = 1; i <= 4; i++) {
-                guess += document.getElementById(letter${i}).value.toLowerCase();
-
-
-
-
-
+                guess += document.getElementById(`letter${i}`).value.toLowerCase();
             }
 
              // Check if the guess is a valid word
@@ -250,35 +244,27 @@
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = ${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows};
+            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
 
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
-
-
-
             }
                 document.getElementById("gameControls").style.display = "block";
 
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(letter${i}).value = "";
-
-
+                document.getElementById(`letter${i}`).value = "";
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
-
             loadWords(); // Reload the word list and select a new secret word
 
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(letter${i}).value = "";
-
+                document.getElementById(`letter${i}`).value = "";
             }
-
 
             // Clear previous guesses
             document.getElementById("history").innerHTML = ""; 
