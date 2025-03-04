@@ -184,22 +184,17 @@
         function moveFocus(index, event) {
             if (event.inputType === "deleteContentBackward") return;
             if (index < 4 && event.target.value) {
-                document.getElementById(`letter${index + 1}`).focus();
+                document.getElementById(letter${index + 1}).focus();
             }
         }
 
         function handleBackspace(index, event) {
             if (event.key === "Backspace" && !event.target.value && index > 1) {
-                document.getElementById(`letter${index - 1}`).focus();
+                document.getElementById(letter${index - 1}).focus();
             }
         }
 
         function checkGuess() {
-            if (gameOver) {
-                alert("You've already guessed the word! Restart to play again.");
-                return;
-            }
-
             if (!secretWord) {
                 console.error("Secret word not loaded yet.");
                 return;
@@ -207,7 +202,7 @@
 
             let guess = "";
             for (let i = 1; i <= 4; i++) {
-                guess += document.getElementById(`letter${i}`).value.toLowerCase();
+                guess += document.getElementById(letter${i}).value.toLowerCase();
             }
 
              // Check if the guess is a valid word
@@ -218,8 +213,10 @@
 
             let bulls = 0;
             let cows = 0;
+
             let secretArray = secretWord.split("");
             let guessArray = guess.split("");
+
             let countedIndexes = new Set(); // Track indexes that are already counted as bulls
 
             // Step 1: Count bulls
@@ -247,28 +244,26 @@
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
+            newGuess.innerText = ${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows};
             historyDiv.prepend(newGuess);
 
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
-                 gameOver = true; // Prevent further guesses
             }
                 document.getElementById("gameControls").style.display = "block";
 
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).value = "";
+                document.getElementById(letter${i}).value = "";
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
             loadWords(); // Reload the word list and select a new secret word
-            gameOver = false; // Reset game status
-                
+
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).value = "";
+                document.getElementById(letter${i}).value = "";
             }
 
             // Clear previous guesses
