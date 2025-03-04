@@ -97,6 +97,9 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             width: 300px;
             text-align: center;
+            z-index: 1000;
+        }
+
         }
         .popup h2 {
             margin-top: 0;
@@ -330,9 +333,13 @@
             alert("The secret word was: " + secretWord.toUpperCase());
         }
         <script>
-        function showHowToPlay() {
-            document.getElementById("howToPlayPopup").style.display = "block";
+            function showHowToPlay() {
+            let popup = document.getElementById("howToPlayPopup");
+            popup.style.display = "block";
+            popup.style.visibility = "visible";
+            popup.style.opacity = "1";
         }
+
         function hideHowToPlay() {
             document.getElementById("howToPlayPopup").style.display = "none";
         }
