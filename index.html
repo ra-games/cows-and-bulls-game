@@ -112,10 +112,10 @@
         <p><strong>Cows:</strong> Correct letter in the wrong position</p>
 
         <div class="input-group">
-            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1)" onkeydown="handleBackspace(1, event)">
-            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2)" onkeydown="handleBackspace(2, event)">
-            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3)" onkeydown="handleBackspace(3, event)">
-            <input type="text" maxlength="1" id="letter4" oninput="moveFocus(4)" onkeydown="handleBackspace(4, event)">
+            <input type="text" maxlength="1" id="letter1" oninput="moveFocus(1, event)" onkeydown="handleBackspace(1, event)">
+            <input type="text" maxlength="1" id="letter2" oninput="moveFocus(2, event)" onkeydown="handleBackspace(2, event)">
+            <input type="text" maxlength="1" id="letter3" oninput="moveFocus(3, event)" onkeydown="handleBackspace(3, event)">
+            <input type="text" maxlength="1" id="letter4" onkeydown="handleBackspace(4, event)">
         </div>
         <div class="button-container">
             <button onclick="checkGuess()">Submit</button>
@@ -132,7 +132,7 @@
     <script>
 
         let secretWord = "";
-        let gameOver = false;
+
 
 /*
         let usedLetters = {};
@@ -199,16 +199,10 @@
                 console.error("Secret word not loaded yet.");
                 return;
             }
-            if (gameOver) return;
             
             let guess = "";
             for (let i = 1; i <= 4; i++) {
-                guess += document.getElementById(`letter${i}`).value.toLowerCase();
-            }
-            
-            if (guess.length < 4) {
-                alert("Enter a 4-letter word!");
-                return;
+                guess += document.getElementById(letter${i}).value.toLowerCase();
             }
 
              // Check if the guess is a valid word
@@ -255,30 +249,22 @@
             
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
+            }
                 document.getElementById("gameControls").style.display = "block";
-                gameOver = true;
-                disableInputs();
-            }
-        }
-            function disableInputs() {
+
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).disabled = true;
-            }
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById(letter${i}).value = "";
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
-                gameOver = false;
             loadWords(); // Reload the word list and select a new secret word
         
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(letter${i}).value = "";
-                document.getElementById(`letter${i}`).disabled = false;
             }
-            document.getElementById("submitBtn").disabled = false;
                 
             // Clear previous guesses
             document.getElementById("history").innerHTML = ""; 
