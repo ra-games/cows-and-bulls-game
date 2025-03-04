@@ -78,45 +78,11 @@
             justify-content: center;
             gap: 10px;
         }
-        .how-to-play-btn {
-            margin-top: 10px;
-            background-color: #007bff;
-        }
-        .how-to-play-btn:hover {
-            background-color: #0056b3;
-        }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            width: 300px;
-            text-align: center;
-            z-index: 1000;
-        }
-
-        }
-        .popup h2 {
-            margin-top: 0;
-        }
-        .popup button {
-            background-color: #dc3545;
-            margin-top: 10px;
-        }
-        .popup button:hover {
-            background-color: #c82333;
-        }
-          .keyboard-container {
+         .keyboard-container {
             display: flex;
             flex-wrap: wrap;
             width: 150px;
             gap: 5px;
-            margin-top: 10px;
         }
         .key {
             width: 30px;
@@ -130,16 +96,12 @@
         }
         .used-correct { background-color: light-gray; color: white; }
         .used-wrong { background-color: gray; color: white; }
-        .win-animation {
-            font-size: 20px;
+        #congratulations {
+            margin-top: 10px;
+            font-size: 18px;
             color: green;
             font-weight: bold;
-            animation: pop 0.5s infinite alternate;
-        }
-        @keyframes pop {
-            from { transform: scale(1); }
-            to { transform: scale(1.2); }
-        }
+            display: none;
     </style>
 </head>
 <body>
@@ -161,28 +123,16 @@
         <div id="history"></div>
         <div id="message" style="margin-top: 10px; font-size: 18px; font-weight: bold; color: green;"></div>
         <div class="keyboard-container" id="keyboard"></div>
-        <div id="message" style="margin-top: 10px; font-size: 18px; font-weight: bold; color: green;"></div>
         <div class="button-container" id="gameControls" style="display: none;">
             <button class="restart-btn" onclick="restartGame()">Restart</button>
             <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
         </div>
-        <button class="how-to-play-btn" onclick="showHowToPlay()">How to Play?</button>
-    </div>
-
-    <div class="popup" id="howToPlayPopup">
-        <h2>How to Play?</h2>
-        <p>1. The game selects a random 4-letter word from a predefined list.</p>
-        <p>2. The player inputs a 4-letter word as a guess.</p>
-        <p>3. The game provides feedback in the form of "Cows" and "Bulls".</p>
-        <p>Example: If the secret word is GAME and the guess is GEAR, the output would be 1 Bull (G) and 2 Cows (A and E).</p>
-        <p>4. The player keeps guessing based on the feedback until they find the correct word (4 Bulls).</p>
-        <button onclick="hideHowToPlay()">Close</button>
     </div>
 
     <script>
 
         let secretWord = "";
-
+        let gameOver = false;
 
 /*
         let usedLetters = {};
@@ -234,13 +184,13 @@
         function moveFocus(index, event) {
             if (event.inputType === "deleteContentBackward") return;
             if (index < 4 && event.target.value) {
-                document.getElementById(`letter${index + 1}`).focus();
+                document.getElementById(letter${index + 1}).focus();
             }
         }
 
         function handleBackspace(index, event) {
             if (event.key === "Backspace" && !event.target.value && index > 1) {
-                document.getElementById(`letter${index - 1}`).focus();
+                document.getElementById(letter${index - 1}).focus();
             }
         }
 
@@ -249,10 +199,16 @@
                 console.error("Secret word not loaded yet.");
                 return;
             }
+            if (gameOver) return;
             
             let guess = "";
             for (let i = 1; i <= 4; i++) {
                 guess += document.getElementById(`letter${i}`).value.toLowerCase();
+            }
+            
+            if (guess.length < 4) {
+                alert("Enter a 4-letter word!");
+                return;
             }
 
              // Check if the guess is a valid word
@@ -294,27 +250,35 @@
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
+            newGuess.innerText = ${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows};
             historyDiv.prepend(newGuess);
             
             if (bulls === 4) {
-                 document.getElementById("message").innerHTML = '<span class="win-animation">🎉 You won! 🎉</span>';
-            }
+                 document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
                 document.getElementById("gameControls").style.display = "block";
-
+                gameOver = true;
+                disableInputs();
+            }
+        }
+            function disableInputs() {
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).value = "";
+                document.getElementById(`letter${i}`).disabled = true;
+            }
+            document.getElementById("submitBtn").disabled = true;
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
+                gameOver = false;
             loadWords(); // Reload the word list and select a new secret word
         
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(`letter${i}`).value = "";
+                document.getElementById(letter${i}).value = "";
+                document.getElementById(`letter${i}`).disabled = false;
             }
+            document.getElementById("submitBtn").disabled = false;
                 
             // Clear previous guesses
             document.getElementById("history").innerHTML = ""; 
@@ -332,32 +296,7 @@
         function revealWord() {
             alert("The secret word was: " + secretWord.toUpperCase());
         }
-        <script>
-            function showHowToPlay() {
-            let popup = document.getElementById("howToPlayPopup");
-            popup.style.display = "block";
-            popup.style.visibility = "visible";
-            popup.style.opacity = "1";
-        }
 
-        function hideHowToPlay() {
-            document.getElementById("howToPlayPopup").style.display = "none";
-        }
-
-        function disableGame() {
-            document.querySelectorAll("input").forEach(input => input.disabled = true);
-            document.getElementById("submitBtn").disabled = true;
-        }
-        function checkGuess() {
-            // Assuming existing game logic sets bullsCount
-            let bullsCount = 4; // Example value for testing
-            if (bullsCount === 4) {
-                document.getElementById("message").innerText = "Congratulations! You guessed the word!";
-                document.getElementById("gameControls").style.display = "block";
-                disableGame();
-            }
-        }
-        
         loadWords();
     </script>
 </body>
