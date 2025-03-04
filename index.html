@@ -169,7 +169,7 @@
             // Randomly select a secret word from the list
             secretWord = secretWords[Math.floor(Math.random() * secretWords.length)];
             console.log("Secret Word:", secretWord);
-            
+
             // Fetch valid words from words.txt
             const wordsResponse = await fetch("words.txt");
             const words = (await wordsResponse.text()).trim().split(",").map(w => w.trim().toLowerCase());
@@ -184,13 +184,13 @@
         function moveFocus(index, event) {
             if (event.inputType === "deleteContentBackward") return;
             if (index < 4 && event.target.value) {
-                document.getElementById(letter${index + 1}).focus();
+                document.getElementById(`letter${index + 1}`).focus();
             }
         }
 
         function handleBackspace(index, event) {
             if (event.key === "Backspace" && !event.target.value && index > 1) {
-                document.getElementById(letter${index - 1}).focus();
+                document.getElementById(`letter${index - 1}`).focus();
             }
         }
 
@@ -199,10 +199,10 @@
                 console.error("Secret word not loaded yet.");
                 return;
             }
-            
+
             let guess = "";
             for (let i = 1; i <= 4; i++) {
-                guess += document.getElementById(letter${i}).value.toLowerCase();
+                guess += document.getElementById(`letter${i}`).value.toLowerCase();
             }
 
              // Check if the guess is a valid word
@@ -210,15 +210,15 @@
                 alert("Invalid word! Please guess a valid 4-letter word.");
                 return;
             }
-            
+
             let bulls = 0;
             let cows = 0;
-            
+
             let secretArray = secretWord.split("");
             let guessArray = guess.split("");
-            
+
             let countedIndexes = new Set(); // Track indexes that are already counted as bulls
-        
+
             // Step 1: Count bulls
             for (let i = 0; i < 4; i++) {
                 if (guessArray[i] === secretArray[i]) {
@@ -227,7 +227,7 @@
                     secretArray[i] = null; // Remove this letter from further consideration
                 }
             }
-        
+
             // Step 2: Count cows
             for (let i = 0; i < 4; i++) {
                 if (guessArray[i] !== secretWord[i] && secretArray.includes(guessArray[i])) {
@@ -244,28 +244,28 @@
             let historyDiv = document.getElementById("history");
             let newGuess = document.createElement("div");
             newGuess.className = "guess-item";
-            newGuess.innerText = ${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows};
+            newGuess.innerText = `${guess.toUpperCase()} → Bulls: ${bulls}, Cows: ${cows}`;
             historyDiv.prepend(newGuess);
-            
+
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
             }
                 document.getElementById("gameControls").style.display = "block";
 
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(letter${i}).value = "";
+                document.getElementById(`letter${i}`).value = "";
             }
             document.getElementById("letter1").focus();
         }
 
             function restartGame() {
             loadWords(); // Reload the word list and select a new secret word
-        
+
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
-                document.getElementById(letter${i}).value = "";
+                document.getElementById(`letter${i}`).value = "";
             }
-                
+
             // Clear previous guesses
             document.getElementById("history").innerHTML = ""; 
 
@@ -274,7 +274,7 @@
 
             // Clear the congratulatory message
             document.getElementById("message").innerText = "";
-                
+
             // Remove any existing alerts/messages
             clearTimeout(alertTimeout); // If the win message is queued, clear it
         }
