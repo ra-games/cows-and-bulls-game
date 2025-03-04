@@ -195,6 +195,11 @@
         }
 
         function checkGuess() {
+            if (gameOver) {
+                alert("You've already guessed the word! Restart to play again.");
+                return;
+            }
+
             if (!secretWord) {
                 console.error("Secret word not loaded yet.");
                 return;
@@ -213,10 +218,8 @@
 
             let bulls = 0;
             let cows = 0;
-
             let secretArray = secretWord.split("");
             let guessArray = guess.split("");
-
             let countedIndexes = new Set(); // Track indexes that are already counted as bulls
 
             // Step 1: Count bulls
@@ -249,6 +252,7 @@
 
             if (bulls === 4) {
                  document.getElementById("message").innerText = "🎉 Congratulations! You guessed the correct word!";
+                 gameOver = true; // Prevent further guesses
             }
                 document.getElementById("gameControls").style.display = "block";
 
@@ -260,7 +264,8 @@
 
             function restartGame() {
             loadWords(); // Reload the word list and select a new secret word
-
+            gameOver = false; // Reset game status
+                
             // Clear input fields
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`letter${i}`).value = "";
