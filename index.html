@@ -94,6 +94,10 @@
             background-color: #ddd;
             cursor: pointer;
         }
+        #submitButton:disabled {
+            opacity: 0.6; /* Reduce opacity to visually indicate it's disabled */
+            cursor: not-allowed; /* Change cursor to "not-allowed" */
+        }
         .used-correct { background-color: light-gray; color: white; }
         .used-wrong { background-color: gray; color: white; }
         #congratulations {
@@ -102,6 +106,7 @@
             color: green;
             font-weight: bold;
             display: none;
+        }
     </style>
 </head>
 <body>
