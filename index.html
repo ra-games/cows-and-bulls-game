@@ -260,6 +260,7 @@
         }
 
             function restartGame() {
+            document.getElementById("submitButton").disabled = false;
             loadWords(); // Reload the word list and select a new secret word
 
             // Clear input fields
@@ -282,6 +283,7 @@
 
         function revealWord() {
             alert("The secret word was: " + secretWord.toUpperCase());
+            document.getElementById("submitButton").disabled = false;
         }
 
         loadWords();
